@@ -7,7 +7,7 @@ from aiohttp import web
 from src.routes import setup_routes
 from src.utils import init_mongo
 from src.config import config
-from src.views import SiteHandler
+from src.handlers import SiteHandler
 
 PROJ_ROOT = pathlib.Path(__file__).parent.parent
 
