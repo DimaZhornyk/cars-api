@@ -3,6 +3,7 @@ import logging
 import pathlib
 
 from aiohttp import web
+from aiohttp_middlewares import cors_middleware
 
 from src.routes import setup_routes
 from src.utils import init_mongo
@@ -25,7 +26,7 @@ async def setup_mongo(app, conf, loop):
 async def init(loop):
     conf = config()
 
-    app = web.Application()
+    app = web.Application(middlewares=[cors_middleware(allow_all=True)])
     mongo = await setup_mongo(app, conf, loop)
     handler = SiteHandler(mongo)
     setup_routes(app, handler, PROJ_ROOT)

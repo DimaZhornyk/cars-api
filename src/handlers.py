@@ -57,7 +57,27 @@ class SiteHandler:
     async def edit_car(self, request):
         body = await request.json()
         try:
+            car.check({
+                '_id': ObjectId(body['id']),
+                'manufacturer': body['data_to_set']['manufacturer'],
+                'model': body['data_to_set']['model'],
+                'year': body['data_to_set']['year'],
+                'color': body['data_to_set']['color'],
+                'vin': body['data_to_set']['vin']
+            })
+            car_with_this_vin = await self.mongo.cars.find_one({'vin': body['data_to_set']['vin']})
+            if car_with_this_vin and ObjectId(body['id']) != car_with_this_vin['_id']:
+                return json_response({'success': False, 'info': 'VIN number must be unique'}, status=400)
             await self.mongo.cars.update_one({'_id': ObjectId(body['id'])}, {'$set': body['data_to_set']})
         except Exception:
             return json_response({'success': False, 'info': 'Error occurred when editing cars'}, status=500)
+        return json_response({'success': True})
+
+    @body_required
+    async def delete_car(self, request):
+        body = await request.json()
+        try:
+            await self.mongo.cars.delete_one({'_id': ObjectId(body['id'])})
+        except Exception:
+            return json_response({'success': False, 'info': 'Error occurred when deleting car'}, status=500)
         return json_response({'success': True})
