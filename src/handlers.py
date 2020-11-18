@@ -1,6 +1,6 @@
 import json
 
-from aiohttp.web import json_response
+from aiohttp.web import json_response, FileResponse
 from bson import ObjectId, json_util
 from trafaret.dataerror import DataError
 
